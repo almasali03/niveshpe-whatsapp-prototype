@@ -265,27 +265,42 @@
         }
 
         .upi-button {
-            background: white;
-            color: #333;
-            border: 2px solid #e0e0e0;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-weight: 600;
+            background: #ffffff;
+            color: #111111;
+            border: 1px solid #e4e6eb;
+            padding: 0 16px;
+            border-radius: 8px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 500;
             cursor: pointer;
-            margin: 8px 4px;
-            font-size: 13px;
-            display: inline-flex;
+            margin: 4px 0;
+            font-size: 14px;
+            display: flex;
             align-items: center;
-            gap: 8px;
-            min-width: 120px;
+            gap: 10px;
+            height: 48px;
+            width: 100%;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: background-color 0.15s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .upi-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            border-color: #10b981;
+            background: #f0f0f0;
+        }
+
+        .upi-button:active {
+            background: #e0e0e0;
+        }
+
+        .upi-buttons-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0 12px;
+            margin: 8px 0;
         }
 
         .upi-icon {
@@ -361,25 +376,41 @@
 
         .quick-replies {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 8px;
-            margin: 10px 0;
+            margin: 12px 0;
+            padding: 0 12px;
         }
 
         .quick-reply {
-            background: #2a3942;
-            color: #e9edef;
-            border: 1px solid #454f5a;
-            border-radius: 20px;
-            padding: 8px 15px;
+            background: #ffffff;
+            color: #111111;
+            border: 1px solid #e4e6eb;
+            border-radius: 8px;
+            padding: 0 16px;
+            height: 44px;
+            width: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background-color 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
 
         .quick-reply:hover {
-            background: #00a884;
-            border-color: #00a884;
+            background: #f0f0f0;
+        }
+
+        .quick-reply:active {
+            background: #e0e0e0;
         }
 
         .hidden {
@@ -498,7 +529,7 @@ Saal mein 18% tak return mil sakta hai! 📈</div>
                     </div>
 
                     <div class="quick-replies">
-                        <button class="quick-reply" onclick="nextScreen()">Haan, start karte hai! 💪</button>
+                        <button class="quick-reply" onclick="nextScreen()">Start karte hai</button>
                     </div>
                 </div>
             </div>
@@ -547,15 +578,15 @@ SBI Mutual Fund mein safe rahega aapka paisa! 🏦</div>
                     </div>
 
                     <div class="quick-replies">
-                        <button class="quick-reply" onclick="setAmount(50)">₹50 roz</button>
-                        <button class="quick-reply" onclick="setAmount(100)">₹100 roz</button>
-                        <button class="quick-reply" onclick="setAmount(200)">₹200 roz</button>
+                        <button class="quick-reply" onclick="setAmount(50)">50 rupaye roz</button>
+                        <button class="quick-reply" onclick="setAmount(100)">100 rupaye roz</button>
+                        <button class="quick-reply" onclick="setAmount(200)">200 rupaye roz</button>
                     </div>
 
                     <div id="amountSelected" style="display:none;">
                         <div class="message sent">
                             <div class="message-bubble">
-                                <div id="selectedAmountMsg">₹100 roz bilkul sahi hai!</div>
+                                <div id="selectedAmountMsg">100 rupaye roz</div>
                                 <div class="message-time">2:33 PM</div>
                             </div>
                         </div>
@@ -590,7 +621,7 @@ SBI Mutual Fund mein safe rahega aapka paisa! 🏦</div>
                         </div>
 
                         <div class="quick-replies">
-                            <button class="quick-reply" onclick="nextScreen()">Payment karte hai! 💳</button>
+                            <button class="quick-reply" onclick="showPaymentMessage()">Payment karo</button>
                         </div>
                     </div>
                 </div>
@@ -639,23 +670,22 @@ Kaunsa UPI app use karte ho? Roz automatic paisa kat jayega:</div>
 
                     <div class="message received">
                         <div class="message-bubble">
-                            <div style="text-align: center;">
+                            <div class="upi-buttons-grid">
                                 <button class="upi-button" onclick="processPayment('Google Pay')">
                                     <img src="assets/google-pay-icon.svg" alt="Google Pay" class="upi-icon">
-                                    Google Pay
+                                    <span>Google Pay</span>
                                 </button>
                                 <button class="upi-button" onclick="processPayment('PhonePe')">
                                     <img src="assets/phonepe-icon.svg" alt="PhonePe" class="upi-icon">
-                                    PhonePe
+                                    <span>PhonePe</span>
                                 </button>
-                                <br>
                                 <button class="upi-button" onclick="processPayment('Paytm')">
                                     <img src="assets/paytm-icon.svg" alt="Paytm" class="upi-icon">
-                                    Paytm
+                                    <span>Paytm</span>
                                 </button>
                                 <button class="upi-button" onclick="processPayment('BHIM')">
                                     <img src="assets/bhim-icon.svg" alt="BHIM UPI" class="upi-icon">
-                                    BHIM UPI
+                                    <span>BHIM UPI</span>
                                 </button>
                             </div>
                             <div class="message-time">2:34 PM</div>
@@ -665,7 +695,7 @@ Kaunsa UPI app use karte ho? Roz automatic paisa kat jayega:</div>
                     <div id="paymentProcessing" style="display:none;">
                         <div class="message sent">
                             <div class="message-bubble">
-                                <div id="selectedUpiMsg">Google Pay perfect hai!</div>
+                                <div id="selectedUpiMsg">Google Pay</div>
                                 <div class="message-time">2:35 PM</div>
                             </div>
                         </div>
@@ -801,8 +831,8 @@ Bas invest karte raho, paisa badhta rahega! 💪</div>
                     </div>
 
                     <div class="quick-replies">
-                        <button class="quick-reply" onclick="resetDemo()">Nayi SIP start karo 🔄</button>
-                        <button class="quick-reply">Portfolio dekho 📈</button>
+                        <button class="quick-reply" onclick="resetDemo()">Nayi SIP start karo</button>
+                        <button class="quick-reply">Portfolio dekho</button>
                     </div>
                 </div>
             </div>
@@ -857,25 +887,62 @@ Bas invest karte raho, paisa badhta rahega! 💪</div>
             const yearly = monthly * 12;
             const projected = yearly * 1.18; // 18% return
             
-            document.getElementById('selectedAmountMsg').textContent = `₹${amount} roz bilkul sahi hai!`;
+            // Set user message to exact button text
+            document.getElementById('selectedAmountMsg').textContent = `${amount} rupaye roz`;
             document.getElementById('summaryAmount').textContent = `₹${amount}`;
             document.getElementById('summaryMonthly').textContent = `₹${monthly.toLocaleString()}`;
             document.getElementById('summaryProjected').textContent = `₹${Math.round(projected).toLocaleString()}`;
             
             document.getElementById('amountSelected').style.display = 'block';
             
-            // Hide quick replies
-            document.querySelectorAll('.quick-reply').forEach(btn => {
-                if (btn.onclick && btn.onclick.toString().includes('setAmount')) {
-                    btn.style.display = 'none';
+            // Hide amount selection quick replies in screen2 more specifically
+            const screen2 = document.getElementById('screen2');
+            if (screen2) {
+                const amountButtons = screen2.querySelectorAll('.quick-replies')[0];
+                if (amountButtons) {
+                    amountButtons.style.display = 'none';
+                    // Add a specific class to track this state
+                    amountButtons.classList.add('amount-buttons-hidden');
                 }
-            });
+            }
             
             setTimeout(scrollToBottom, 100);
         }
 
+        function showPaymentMessage() {
+            // Add a new sent message with "Payment karo" before moving to next screen
+            const chatContainer = document.getElementById('chat2');
+            
+            // Check if payment message already exists and remove it
+            const existingPaymentMsg = chatContainer.querySelector('.dynamic-payment-msg');
+            if (existingPaymentMsg) {
+                existingPaymentMsg.remove();
+            }
+            
+            const paymentKaroMsg = document.createElement('div');
+            paymentKaroMsg.className = 'message sent dynamic-payment-msg';
+            paymentKaroMsg.innerHTML = `
+                <div class="message-bubble">
+                    <div>Payment karo</div>
+                    <div class="message-time">2:34 PM</div>
+                </div>
+            `;
+            
+            // Find the quick-replies element and insert before it
+            const quickReplies = chatContainer.querySelector('#amountSelected .quick-replies');
+            if (quickReplies) {
+                chatContainer.insertBefore(paymentKaroMsg, quickReplies.parentElement);
+                quickReplies.style.display = 'none';
+            }
+            
+            setTimeout(() => {
+                nextScreen();
+            }, 500);
+        }
+
         function processPayment(upiApp) {
-            document.getElementById('selectedUpiMsg').textContent = `${upiApp} perfect hai!`;
+            // Show exact button text as user message
+            document.getElementById('selectedUpiMsg').textContent = upiApp;
             document.getElementById('paymentProcessing').style.display = 'block';
             
             // Hide UPI buttons
@@ -900,10 +967,45 @@ Bas invest karte raho, paisa badhta rahega! 💪</div>
             document.getElementById('amountSelected').style.display = 'none';
             document.getElementById('paymentProcessing').style.display = 'none';
             
-            // Show all buttons again
-            document.querySelectorAll('.quick-reply, .upi-button').forEach(btn => {
-                btn.style.display = 'inline-block';
+            // Show all quick reply buttons again - including amount buttons in screen2
+            document.querySelectorAll('.quick-reply').forEach(btn => {
+                btn.style.display = 'flex';
             });
+            
+            // Show all UPI buttons again
+            document.querySelectorAll('.upi-button').forEach(btn => {
+                btn.style.display = 'flex';
+            });
+            
+            // Remove any dynamically added payment messages
+            document.querySelectorAll('.dynamic-payment-msg').forEach(msg => {
+                msg.remove();
+            });
+            
+            // Reset quick replies containers visibility - especially in screen2
+            document.querySelectorAll('.quick-replies').forEach(container => {
+                container.style.display = 'flex';
+            });
+            
+            // Specifically reset screen2 amount selection buttons
+            const screen2 = document.getElementById('screen2');
+            if (screen2) {
+                const amountButtons = screen2.querySelectorAll('.quick-replies')[0];
+                if (amountButtons) {
+                    amountButtons.style.display = 'flex';
+                    amountButtons.classList.remove('amount-buttons-hidden');
+                    // Make sure individual buttons are visible too
+                    amountButtons.querySelectorAll('.quick-reply').forEach(btn => {
+                        btn.style.display = 'flex';
+                    });
+                }
+            }
+            
+            // Reset typing indicator if still active
+            const typing = document.querySelector('.typing-indicator');
+            if (typing) {
+                typing.classList.remove('active');
+            }
             
             goToScreen(1);
         }
