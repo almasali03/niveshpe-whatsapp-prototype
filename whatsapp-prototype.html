@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NiveshPe WhatsApp Investment Flow - Prototype</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #0a1428;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .phone-container {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 15px 15px;
+            z-index: 10;
+        }
+
+        .phone-status-bar {
+            background: #0b141a;
+            padding: 8px 20px 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 32px 32px 0 0;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #0b141a;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .whatsapp-header {
+            background: #202c33;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid #2a3942;
+        }
+
+        .back-arrow {
+            color: #8696a0;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .contact-details h3 {
+            color: #e9edef;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .contact-details p {
+            color: #8696a0;
+            font-size: 12px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 20px;
+            color: #8696a0;
+            font-size: 20px;
+        }
+
+        .chat-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #0b141a;
+            height: calc(100% - 155px);
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.received {
+            justify-content: flex-start;
+        }
+
+        .message.sent {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 280px;
+            padding: 12px 15px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .message.received .message-bubble {
+            background: #202c33;
+            color: #e9edef;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.sent .message-bubble {
+            background: #005c4b;
+            color: #e9edef;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #8696a0;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .message.received .message-time {
+            text-align: left;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 15px;
+            background: #202c33;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            max-width: 100px;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #8696a0;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.3;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        .investment-summary {
+            background: #1e3a8a;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            color: white;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+            font-weight: bold;
+            font-size: 16px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .upi-button {
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 8px 4px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 120px;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .upi-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-color: #10b981;
+        }
+
+        .upi-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .success-animation {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .checkmark {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #10b981;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.6s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .portfolio-card {
+            background: linear-gradient(135deg, #1e3a8a, #10b981);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .portfolio-balance {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .portfolio-growth {
+            color: #34d399;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .portfolio-details {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .quick-reply {
+            background: #2a3942;
+            color: #e9edef;
+            border: 1px solid #454f5a;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-reply:hover {
+            background: #00a884;
+            border-color: #00a884;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            height: 100%;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn {
+            background: #374151;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.active {
+            background: #10b981;
+        }
+
+        .nav-btn:hover {
+            background: #4b5563;
+        }
+
+        .nav-btn.active:hover {
+            background: #059669;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+            <!-- Status Bar -->
+            <div class="phone-status-bar">
+                <div class="status-left">
+                    <span>9:41</span>
+                </div>
+                <div class="status-right">
+                    <span>📶</span>
+                    <span>📶</span>
+                    <span>🔋</span>
+                </div>
+            </div>
+
+            <!-- Screen 1: Initial Contact -->
+            <div class="screen active" id="screen1">
+                <div class="whatsapp-header">
+                    <span class="back-arrow">‹</span>
+                    <div class="contact-info">
+                        <div class="profile-pic">
+                            <img src="assets/niveshpe-icon.png" alt="NiveshPe">
+                        </div>
+                        <div class="contact-details">
+                            <h3>NiveshPe</h3>
+                            <p>online</p>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <span>📞</span>
+                        <span>⋮</span>
+                    </div>
+                </div>
+
+                <div class="chat-container" id="chat1">
+                    <div class="message received">
+                        <div class="message-bubble">
+                            <div>🙏 Namaste Rakesh ji! NiveshPe se bol raha hun. 
+                            
+Hum aap jaise hardworking logo ko daily chhote amount se investment start karne mein help karte hai.
+
+Ready hai paisa badhane ke liye? 🚀</div>
+                            <div class="message-time">2:30 PM</div>
+                        </div>
+                    </div>
+
+                    <div class="message sent">
+                        <div class="message-bubble">
+                            <div>Haan, main daily thoda thoda paisa invest karna chahta hun</div>
+                            <div class="message-time">2:31 PM</div>
+                        </div>
+                    </div>
+
+                    <div class="message received">
+                        <div class="message-bubble">
+                            <div>Perfect! 💰 Daily SIP se aapka paisa achha grow hoga.
+
+Hum aapka paisa SBI Mutual Fund mein invest karenge - trusted aur safe hai!
+
+Saal mein 18% tak return mil sakta hai! 📈</div>
+                            <div class="message-time">2:31 PM</div>
+                        </div>
+                    </div>
+
+                    <div class="quick-replies">
+                        <button class="quick-reply" onclick="nextScreen()">Haan, start karte hai! 💪</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 2: SIP Setup -->
+            <div class="screen" id="screen2">
+                <!-- Status Bar -->
+                <div class="phone-status-bar">
+                    <div class="status-left">
+                        <span>9:41</span>
+                    </div>
+                    <div class="status-right">
+                        <span>📶</span>
+                        <span>📶</span>
+                        <span>🔋</span>
+                    </div>
+                </div>
+                
+                <div class="whatsapp-header">
+                    <span class="back-arrow">‹</span>
+                    <div class="contact-info">
+                        <div class="profile-pic">
+                            <img src="assets/niveshpe-icon.png" alt="NiveshPe">
+                        </div>
+                        <div class="contact-details">
+                            <h3>NiveshPe</h3>
+                            <p>online</p>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <span>📞</span>
+                        <span>⋮</span>
+                    </div>
+                </div>
+
+                <div class="chat-container" id="chat2">
+                    <div class="message received">
+                        <div class="message-bubble">
+                            <div>Great Rakesh ji! 🎉 
+                            
+Ab batao, daily kitna paisa invest karna hai?
+
+SBI Mutual Fund mein safe rahega aapka paisa! 🏦</div>
+                            <div class="message-time">2:32 PM</div>
+                        </div>
+                    </div>
+
+                    <div class="quick-replies">
+                        <button class="quick-reply" onclick="setAmount(50)">₹50 roz</button>
+                        <button class="quick-reply" onclick="setAmount(100)">₹100 roz</button>
+                        <button class="quick-reply" onclick="setAmount(200)">₹200 roz</button>
+                    </div>
+
+                    <div id="amountSelected" style="display:none;">
+                        <div class="message sent">
+                            <div class="message-bubble">
+                                <div id="selectedAmountMsg">₹100 roz bilkul sahi hai!</div>
+                                <div class="message-time">2:33 PM</div>
+                            </div>
+                        </div>
+
+                        <div class="message received">
+                            <div class="message-bubble">
+                                <div>Excellent Rakesh ji! Dekho aapka SIP ka hisab:</div>
+                                <div class="investment-summary">
+                                    <div class="summary-row">
+                                        <span>Fund:</span>
+                                        <span id="summaryFund">SBI Mutual Fund</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span>Roz ka paisa:</span>
+                                        <span id="summaryAmount">₹100</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span>Mahine ka total:</span>
+                                        <span id="summaryMonthly">₹3,000</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span>Saal mein return:</span>
+                                        <span>18% tak</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span>1 saal baad value:</span>
+                                        <span id="summaryProjected">₹42,120</span>
+                                    </div>
+                                </div>
+                                <div class="message-time">2:33 PM</div>
+                            </div>
+                        </div>
+
+                        <div class="quick-replies">
+                            <button class="quick-reply" onclick="nextScreen()">Payment karte hai! 💳</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 3: UPI Payment -->
+            <div class="screen" id="screen3">
+                <!-- Status Bar -->
+                <div class="phone-status-bar">
+                    <div class="status-left">
+                        <span>9:41</span>
+                    </div>
+                    <div class="status-right">
+                        <span>📶</span>
+                        <span>📶</span>
+                        <span>🔋</span>
+                    </div>
+                </div>
+                
+                <div class="whatsapp-header">
+                    <span class="back-arrow">‹</span>
+                    <div class="contact-info">
+                        <div class="profile-pic">
+                            <img src="assets/niveshpe-icon.png" alt="NiveshPe">
+                        </div>
+                        <div class="contact-details">
+                            <h3>NiveshPe</h3>
+                            <p>online</p>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <span>📞</span>
+                        <span>⋮</span>
+                    </div>
+                </div>
+
+                <div class="chat-container" id="chat3">
+                    <div class="message received">
+                        <div class="message-bubble">
+                            <div>Perfect Rakesh ji! 🎯 Ab payment setup karte hai.
+
+Kaunsa UPI app use karte ho? Roz automatic paisa kat jayega:</div>
+                            <div class="message-time">2:34 PM</div>
+                        </div>
+                    </div>
+
+                    <div class="message received">
+                        <div class="message-bubble">
+                            <div style="text-align: center;">
+                                <button class="upi-button" onclick="processPayment('Google Pay')">
+                                    <img src="assets/google-pay-icon.svg" alt="Google Pay" class="upi-icon">
+                                    Google Pay
+                                </button>
+                                <button class="upi-button" onclick="processPayment('PhonePe')">
+                                    <img src="assets/phonepe-icon.svg" alt="PhonePe" class="upi-icon">
+                                    PhonePe
+                                </button>
+                                <br>
+                                <button class="upi-button" onclick="processPayment('Paytm')">
+                                    <img src="assets/paytm-icon.svg" alt="Paytm" class="upi-icon">
+                                    Paytm
+                                </button>
+                                <button class="upi-button" onclick="processPayment('BHIM')">
+                                    <img src="assets/bhim-icon.svg" alt="BHIM UPI" class="upi-icon">
+                                    BHIM UPI
+                                </button>
+                            </div>
+                            <div class="message-time">2:34 PM</div>
+                        </div>
+                    </div>
+
+                    <div id="paymentProcessing" style="display:none;">
+                        <div class="message sent">
+                            <div class="message-bubble">
+                                <div id="selectedUpiMsg">Google Pay perfect hai!</div>
+                                <div class="message-time">2:35 PM</div>
+                            </div>
+                        </div>
+
+                        <div class="message received">
+                            <div class="message-bubble">
+                                <div>Great Rakesh ji! 🔄 UPI setup kar rahe hai...
+                                
+Aapko mandate ka request aayega ₹100 roz auto-debit ke liye.
+
+Approve kar dena, SIP start ho jayega!</div>
+                                <div class="message-time">2:35 PM</div>
+                            </div>
+                        </div>
+
+                        <div class="typing-indicator active">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 4: Success & Portfolio -->
+            <div class="screen" id="screen4">
+                <!-- Status Bar -->
+                <div class="phone-status-bar">
+                    <div class="status-left">
+                        <span>9:41</span>
+                    </div>
+                    <div class="status-right">
+                        <span>📶</span>
+                        <span>📶</span>
+                        <span>🔋</span>
+                    </div>
+                </div>
+                
+                <div class="whatsapp-header">
+                    <span class="back-arrow">‹</span>
+                    <div class="contact-info">
+                        <div class="profile-pic">
+                            <img src="assets/niveshpe-icon.png" alt="NiveshPe">
+                        </div>
+                        <div class="contact-details">
+                            <h3>NiveshPe</h3>
+                            <p>online</p>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <span>📞</span>
+                        <span>⋮</span>
+                    </div>
+                </div>
+
+                <div class="chat-container" id="chat4">
+                    <div class="message received">
+                        <div class="message-bubble">
+                            <div class="success-animation">
+                                <div class="checkmark">✓</div>
+                                <div style="font-weight: bold; color: #10b981;">🎉 Congratulations Rakesh ji!</div>
+                            </div>
+                            <div class="message-time">2:36 PM</div>
+                        </div>
+                    </div>
+
+                    <div class="message received">
+                        <div class="message-bubble">
+                            <div>Aapka SIP ab active hai! 🚀
+                            
+Pehla ₹100 successfully invest ho gaya SBI Mutual Fund mein.
+
+Ye dekho aapka portfolio:</div>
+                            <div class="message-time">2:36 PM</div>
+                        </div>
+                    </div>
+
+                    <div class="message received">
+                        <div class="message-bubble">
+                            <div class="portfolio-card">
+                                <div style="font-size: 16px; margin-bottom: 15px; font-weight: bold;">📊 Aapka NiveshPe Portfolio</div>
+                                <div class="portfolio-balance">₹12,775</div>
+                                <div class="portfolio-growth">+₹175 (1.39%) ↗️ Aaj</div>
+                                
+                                <div class="portfolio-details">
+                                    <div class="detail-row">
+                                        <span>Total invest kiya:</span>
+                                        <span>₹12,600</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span>Abhi ki value:</span>
+                                        <span>₹12,775</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span>Profit:</span>
+                                        <span style="color: #34d399;">+₹175 (1.39%)</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span>Active SIPs:</span>
+                                        <span>1</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span>Fund:</span>
+                                        <span>SBI Mutual Fund</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span>Roz ka SIP:</span>
+                                        <span>₹100</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span>Agle din investment:</span>
+                                        <span>Kal, 9:00 AM</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="message-time">2:36 PM</div>
+                        </div>
+                    </div>
+
+                    <div class="message received">
+                        <div class="message-bubble">
+                            <div>🔔 Roz message aayega investment ke baare mein.
+
+Aap kar sakte ho:
+• Reports dekh sakte ho
+• SIP amount badha sakte ho  
+• Aur funds add kar sakte ho
+• Goals track kar sakte ho
+
+Bas invest karte raho, paisa badhta rahega! 💪</div>
+                            <div class="message-time">2:37 PM</div>
+                        </div>
+                    </div>
+
+                    <div class="quick-replies">
+                        <button class="quick-reply" onclick="resetDemo()">Nayi SIP start karo 🔄</button>
+                        <button class="quick-reply">Portfolio dekho 📈</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <button class="nav-btn active" onclick="goToScreen(1)">1</button>
+        <button class="nav-btn" onclick="goToScreen(2)">2</button>
+        <button class="nav-btn" onclick="goToScreen(3)">3</button>
+        <button class="nav-btn" onclick="goToScreen(4)">4</button>
+    </div>
+
+    <script>
+        let currentScreen = 1;
+        let selectedFund = 'SBI Mutual Fund';
+        let selectedAmount = 100;
+
+        function nextScreen() {
+            if (currentScreen < 4) {
+                currentScreen++;
+                goToScreen(currentScreen);
+                
+                if (currentScreen === 4) {
+                    setTimeout(() => {
+                        // Auto-play success animation
+                        const typing = document.querySelector('.typing-indicator');
+                        if (typing) {
+                            typing.classList.remove('active');
+                        }
+                    }, 1000);
+                }
+            }
+        }
+
+        function goToScreen(screenNum) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(`screen${screenNum}`).classList.add('active');
+            document.querySelectorAll('.nav-btn')[screenNum - 1].classList.add('active');
+            currentScreen = screenNum;
+            
+            // Smooth scroll after screen change
+            setTimeout(scrollToBottom, 200);
+        }
+
+        function setAmount(amount) {
+            selectedAmount = amount;
+            const monthly = amount * 30;
+            const yearly = monthly * 12;
+            const projected = yearly * 1.18; // 18% return
+            
+            document.getElementById('selectedAmountMsg').textContent = `₹${amount} roz bilkul sahi hai!`;
+            document.getElementById('summaryAmount').textContent = `₹${amount}`;
+            document.getElementById('summaryMonthly').textContent = `₹${monthly.toLocaleString()}`;
+            document.getElementById('summaryProjected').textContent = `₹${Math.round(projected).toLocaleString()}`;
+            
+            document.getElementById('amountSelected').style.display = 'block';
+            
+            // Hide quick replies
+            document.querySelectorAll('.quick-reply').forEach(btn => {
+                if (btn.onclick && btn.onclick.toString().includes('setAmount')) {
+                    btn.style.display = 'none';
+                }
+            });
+            
+            setTimeout(scrollToBottom, 100);
+        }
+
+        function processPayment(upiApp) {
+            document.getElementById('selectedUpiMsg').textContent = `${upiApp} perfect hai!`;
+            document.getElementById('paymentProcessing').style.display = 'block';
+            
+            // Hide UPI buttons
+            document.querySelectorAll('.upi-button').forEach(btn => {
+                btn.style.display = 'none';
+            });
+            
+            setTimeout(scrollToBottom, 100);
+            
+            // Auto proceed to success after 3 seconds
+            setTimeout(() => {
+                nextScreen();
+            }, 3000);
+        }
+
+        function resetDemo() {
+            currentScreen = 1;
+            selectedFund = 'SBI Mutual Fund';
+            selectedAmount = 100;
+            
+            // Reset all selections and states
+            document.getElementById('amountSelected').style.display = 'none';
+            document.getElementById('paymentProcessing').style.display = 'none';
+            
+            // Show all buttons again
+            document.querySelectorAll('.quick-reply, .upi-button').forEach(btn => {
+                btn.style.display = 'inline-block';
+            });
+            
+            goToScreen(1);
+        }
+
+        // Auto-scroll to bottom of chat containers
+        function scrollToBottom() {
+            const activeScreen = document.querySelector('.screen.active');
+            if (activeScreen) {
+                const chatContainer = activeScreen.querySelector('.chat-container');
+                if (chatContainer) {
+                    chatContainer.scrollTo({
+                        top: chatContainer.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        }
+
+        // Add smooth scrolling on screen changes and message updates
+        function initScrolling() {
+            scrollToBottom();
+            // Scroll when new content is added
+            const observer = new MutationObserver(() => {
+                setTimeout(scrollToBottom, 100);
+            });
+            
+            document.querySelectorAll('.chat-container').forEach(container => {
+                observer.observe(container, {
+                    childList: true,
+                    subtree: true
+                });
+            });
+        }
+        
+        // Initialize scrolling when page loads
+        document.addEventListener('DOMContentLoaded', initScrolling);
+    </script>
+</body>
+</html>
